@@ -911,7 +911,10 @@ router.post("/new-promotion-application", verifyToken, async (req, res) => {
       "VALUES(?,?,?,?)",
     [sp_number, rank_name, 0, "ongoing"]
   );
-
+  query("update staff_details set rank_being_applied_for=? where sp_number=?", [
+    rank_name,
+    sp_number,
+  ]);
   if (insertOperation.insertId) {
     let rankId = insertOperation.insertId;
 

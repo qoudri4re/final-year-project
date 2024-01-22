@@ -7,24 +7,12 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import {
-  // Alert,
-  // Avatar,
-  // Button,
-  Chip,
-  // Dialog,
-  // DialogActions,
-  // DialogContent,
-  // DialogContentText,
-  // DialogTitle,
-  // Slide,
-  // TextField,
-} from "@mui/material";
+import { Chip } from "@mui/material";
 import { IoMdEye } from "react-icons/io";
 import { FcApproval } from "react-icons/fc";
 import { ImCancelCircle } from "react-icons/im";
-import { client } from "../../../config/axios-request";
 import { useNavigate } from "react-router-dom";
+import { client } from "../../config/axios-request";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -53,24 +41,29 @@ let applicationStatusLableColor = {
   submitted: "secondary",
   "department rejected": "error",
   "department approved": "success",
+  "faculty approved": "success",
+  "faculty rejected": "error",
 };
 
-function Applications() {
+function ApplicationsFad() {
   let navigate = useNavigate();
   const [errors, setErrors] = useState([]);
   const [promotionalApplications, setPromotionalApplications] = useState([]);
+  const [remarks, setRemarks] = useState([]);
 
   useEffect(() => {
     client
-      .get("admin/all-promotional-applications")
+      .get("admin/fad/all-promotional-applications")
       .then((res) => {
         if (res.data.error) {
           if ("tokenError" in res.data) {
-            navigate("/admin/login");
+            navigate("/fad/login");
           } else {
             setErrors([res.data.errorMessage]);
           }
         } else {
+          console.log(res.data);
+          setRemarks(res.data.remarks);
           setPromotionalApplications(
             res.data.promotionalApplications.map((item, index) => {
               return {
@@ -85,7 +78,7 @@ function Applications() {
   }, []);
 
   function viewApplication(promotionId, sp_number) {
-    navigate(`/admin/view-application/${sp_number}/${promotionId}`);
+    navigate(`/fad/view-application/${sp_number}/${promotionId}`);
   }
 
   return (
@@ -136,8 +129,7 @@ function Applications() {
                       </StyledTableCell>
                       <StyledTableCell align="center">
                         <div className="action__buttons">
-                          {item.status.includes("approved") ||
-                          item.status.includes("rejected") ? (
+                          <React.Fragment>
                             <Chip
                               icon={<IoMdEye />}
                               label="View application"
@@ -147,33 +139,34 @@ function Applications() {
                                 viewApplication(item.id, item.sp_number)
                               }
                             />
-                          ) : (
-                            <React.Fragment>
-                              <Chip
-                                icon={<IoMdEye />}
-                                label="View application"
-                                variant=""
-                                className="icon"
-                                onClick={() =>
-                                  viewApplication(item.id, item.sp_number)
-                                }
-                              />
-                              <Chip
-                                icon={<FcApproval />}
-                                label="Approve"
-                                variant=""
-                                className="icon"
-                                color="success"
-                              />
-                              <Chip
-                                icon={<ImCancelCircle />}
-                                label="Reject"
-                                variant=""
-                                className="icon"
-                                color="error"
-                              />
-                            </React.Fragment>
-                          )}
+                            {item.status.includes("faculty approved") ||
+                            item.status.includes("department approved") ? (
+                              ""
+                            ) : (
+                              <React.Fragment>
+                                <Chip
+                                  icon={<FcApproval />}
+                                  label="Approve"
+                                  variant=""
+                                  className="icon"
+                                  color="success"
+                                />
+                                <Chip
+                                  icon={<ImCancelCircle />}
+                                  label="Reject"
+                                  variant=""
+                                  className="icon"
+                                  color="error"
+                                />
+                              </React.Fragment>
+                            )}
+                            {remarks.map((item) => {
+                              if (item.promotion_id === item.id) {
+                                return <p>add badge</p>;
+                              }
+                              return "";
+                            })}
+                          </React.Fragment>
                         </div>
                       </StyledTableCell>
                     </StyledTableRow>
@@ -192,4 +185,4 @@ function Applications() {
   );
 }
 
-export default Applications;
+export default ApplicationsFad;

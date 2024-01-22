@@ -139,7 +139,7 @@ function PromotionalApplications({ setSelectedPromotion }) {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [navigate]);
 
   function createPromotionalApplication() {
     if (nextRank !== "") {

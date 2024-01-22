@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { client } from "../../config/axios-request";
 import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -28,6 +27,7 @@ import { MdOutlineAddCircle } from "react-icons/md";
 import { ImCancelCircle } from "react-icons/im";
 import { FcApproval } from "react-icons/fc";
 import { IoMdEye } from "react-icons/io";
+import { client } from "../../config/axios-request";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -48,70 +48,16 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
-function AdminViewApplication() {
+
+function FadAdminViewApplication() {
   let navigate = useNavigate();
   const { promotionId } = useParams();
   const { spNumber } = useParams();
 
   const [pageData, setPageData] = useState(null);
   const [errors, setErrors] = useState([]);
-  const [openAssessmentForm, setOpenAssessmentForm] = useState(false);
-  const [assessmentError, setAssessmentError] = useState(false);
-
-  let assessmentData = {
-    coverage_of_syllabus: "",
-    effective_communication: "",
-    conduct_of_tutorial: "",
-    attendance_punctuality: "",
-    promptness_marking: "",
-    student_performance: "",
-    eval_of_lecturer: "",
-    maintenance: "",
-  };
-
-  function handleAssessmentFormChange(e) {
-    assessmentData = {
-      ...assessmentData,
-      [e.target.name]: e.target.value,
-    };
-  }
-
   const [successMessage, setSuccessMessage] = useState(null);
 
-  function submitAssessment() {
-    if (
-      assessmentData.attendance_punctuality !== "" ||
-      assessmentData.conduct_of_tutorial !== "" ||
-      assessmentData.coverage_of_syllabus !== "" ||
-      assessmentData.effective_communication !== "" ||
-      assessmentData.eval_of_lecturer !== "" ||
-      assessmentData.maintenance !== "" ||
-      assessmentData.promptness_marking !== "" ||
-      assessmentData.student_performance !== ""
-    ) {
-      client
-        .post("/admin/hod/add-assessment", { ...assessmentData, promotionId })
-        .then((res) => {
-          if (res.data.error) {
-            if ("tokenError" in res.data) {
-              navigate("/admin/login");
-            } else {
-              setErrors([res.data.errorMessage]);
-            }
-          } else {
-            setSuccessMessage("Assessment form added");
-            toogleAssessmentForm();
-          }
-        })
-        .catch((error) => console.log(error));
-    } else {
-      setAssessmentError(true);
-    }
-  }
-
-  function toogleAssessmentForm() {
-    setOpenAssessmentForm(!openAssessmentForm);
-  }
   function downloadFile(filePath, fileName) {
     filePath = filePath.replace(/\\/g, "/");
     client
@@ -190,9 +136,10 @@ function AdminViewApplication() {
 
   const [openRejectPromotionDialog, setOpenRejectPromotionDialog] =
     useState(false);
+
   function rejectApplication() {
     client
-      .post("/admin/hod/reject-promotion", {
+      .post("/admin/fad/reject-promotion", {
         promotionId,
         rejectionMessage: rejectionReason,
       })
@@ -220,7 +167,7 @@ function AdminViewApplication() {
 
   function approveApplication() {
     client
-      .post("/admin/hod/approve-application", { promotionId })
+      .post("/admin/fad/approve-application", { promotionId })
       .then((res) => {
         if (res.data.error) {
           if ("tokenError" in res.data) {
@@ -265,30 +212,20 @@ function AdminViewApplication() {
               Application details
             </h3>
             <div className="application__actions">
-              {!pageData.hod_assessment.length ? (
-                <Chip
-                  icon={<IoMdEye />}
-                  label="Add your Assessment"
-                  variant=""
-                  className="icon"
-                  onClick={toogleAssessmentForm}
-                />
-              ) : (
-                ""
-              )}
+              <Chip
+                label={pageData.promotionData.status}
+                variant=""
+                className="icon"
+                color={
+                  pageData.promotionData.status.includes("approved")
+                    ? "success"
+                    : "error"
+                }
+              />
 
-              {pageData.promotionData.status.includes("approved") ||
-              pageData.promotionData.status.includes("rejected") ? (
-                <Chip
-                  label={pageData.promotionData.status}
-                  variant=""
-                  className="icon"
-                  color={
-                    pageData.promotionData.status.includes("approved")
-                      ? "success"
-                      : "error"
-                  }
-                />
+              {pageData.promotionData.status.includes("faculty approved") ||
+              pageData.promotionData.status.includes("faculty rejected") ? (
+                ""
               ) : (
                 <React.Fragment>
                   <Chip
@@ -1017,205 +954,6 @@ function AdminViewApplication() {
             <h3>Grand Total Points: 0</h3>
           </div>
         </div>
-        <Dialog open={openAssessmentForm} className="assessment__modal">
-          <DialogTitle>HOD's Assesment</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Assessment of Quality of Teaching
-            </DialogContentText>
-            <div className="assessment__details">
-              <TableContainer component={Paper} className="assessment__table">
-                <Table aria-label="customized table">
-                  <TableHead>
-                    <TableRow>
-                      <StyledTableCell width={1}>S/N</StyledTableCell>
-                      <StyledTableCell align="center">ITEM</StyledTableCell>
-                      <StyledTableCell align="center">SCORE</StyledTableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody className="table__row">
-                    <StyledTableRow>
-                      <StyledTableCell component="th" scope="row">
-                        1.
-                      </StyledTableCell>
-                      <StyledTableCell align="left">
-                        Coverage of syllabus
-                      </StyledTableCell>
-                      <StyledTableCell align="left">
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="coverage_of_syllabus"
-                          name="coverage_of_syllabus"
-                          type="text"
-                          variant="standard"
-                          onChange={(e) => handleAssessmentFormChange(e)}
-                        />
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  </TableBody>
-                  <TableBody className="table__row">
-                    <StyledTableRow>
-                      <StyledTableCell component="th" scope="row">
-                        2.
-                      </StyledTableCell>
-                      <StyledTableCell align="left">
-                        Effective communication
-                      </StyledTableCell>
-                      <StyledTableCell align="left">
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="effective_communication"
-                          name="effective_communication"
-                          type="text"
-                          variant="standard"
-                          onChange={(e) => handleAssessmentFormChange(e)}
-                        />
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  </TableBody>
-                  <TableBody className="table__row">
-                    <StyledTableRow>
-                      <StyledTableCell component="th" scope="row">
-                        3.
-                      </StyledTableCell>
-                      <StyledTableCell align="left">
-                        Conduct of tutorials
-                      </StyledTableCell>
-                      <StyledTableCell align="left">
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="conduct_of_tutorial"
-                          name="conduct_of_tutorial"
-                          type="text"
-                          fullWidth
-                          variant="standard"
-                          onChange={(e) => handleAssessmentFormChange(e)}
-                        />
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  </TableBody>
-                  <TableBody className="table__row">
-                    <StyledTableRow>
-                      <StyledTableCell component="th" scope="row">
-                        4.
-                      </StyledTableCell>
-                      <StyledTableCell align="left">
-                        Attendance and punctuality
-                      </StyledTableCell>
-                      <StyledTableCell align="left">
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="attendance_punctuality"
-                          name="attendance_punctuality"
-                          type="text"
-                          fullWidth
-                          variant="standard"
-                          onChange={(e) => handleAssessmentFormChange(e)}
-                        />
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  </TableBody>
-                  <TableBody className="table__row">
-                    <StyledTableRow>
-                      <StyledTableCell component="th" scope="row">
-                        5.
-                      </StyledTableCell>
-                      <StyledTableCell align="left">
-                        Promptness in marking assignment and examination scripts
-                      </StyledTableCell>
-                      <StyledTableCell align="left">
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="promptness_marking"
-                          name="promptness_marking"
-                          type="text"
-                          fullWidth
-                          variant="standard"
-                          onChange={(e) => handleAssessmentFormChange(e)}
-                        />
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  </TableBody>
-                  <TableBody className="table__row">
-                    <StyledTableRow>
-                      <StyledTableCell component="th" scope="row">
-                        6.
-                      </StyledTableCell>
-                      <StyledTableCell align="left">
-                        Students' performance in examination
-                      </StyledTableCell>
-                      <StyledTableCell align="left">
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="student_performance"
-                          name="student_performance"
-                          type="text"
-                          fullWidth
-                          variant="standard"
-                          onChange={(e) => handleAssessmentFormChange(e)}
-                        />
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  </TableBody>
-                  <TableBody className="table__row">
-                    <StyledTableRow>
-                      <StyledTableCell component="th" scope="row">
-                        7.
-                      </StyledTableCell>
-                      <StyledTableCell align="left">
-                        External Examiners/Assessor's evaluation of lecturer
-                      </StyledTableCell>
-                      <StyledTableCell align="left">
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="eval_of_lecturer"
-                          name="eval_of_lecturer"
-                          type="text"
-                          variant="standard"
-                          onChange={(e) => handleAssessmentFormChange(e)}
-                        />
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  </TableBody>
-                  <TableBody className="table__row">
-                    <StyledTableRow>
-                      <StyledTableCell component="th" scope="row">
-                        8.
-                      </StyledTableCell>
-                      <StyledTableCell align="left">
-                        Maintenance of attendance and continuous assessment
-                        records of students
-                      </StyledTableCell>
-                      <StyledTableCell align="left">
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="maintenance"
-                          name="maintenance"
-                          type="text"
-                          fullWidth
-                          variant="standard"
-                          onChange={(e) => handleAssessmentFormChange(e)}
-                        />
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={toogleAssessmentForm}>Cancel</Button>
-            <Button onClick={submitAssessment}>Save</Button>
-          </DialogActions>
-        </Dialog>
 
         <Dialog
           open={openApprovePromotionDialog}
@@ -1278,4 +1016,4 @@ function AdminViewApplication() {
   );
 }
 
-export default AdminViewApplication;
+export default FadAdminViewApplication;
