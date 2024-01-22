@@ -1,38 +1,563 @@
-.App {
-  text-align: center;
+* {
+  margin: 0;
+}
+.app {
+  height: 100vh;
+  width: 100vw;
+  overflow-y: scroll;
+}
+.header {
+  background-color: aqua;
+  height: 8%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.contents {
+  height: 92%;
+  display: flex;
+  justify-content: space-between;
+}
+.sidebar {
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.08);
+  width: 20%;
+}
+.profile__card {
+  display: flex;
+  flex-direction: column;
+  height: 25%;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+.profile__card img {
+  border-radius: 50%;
+  height: 60%;
+  width: 38%;
+}
+.navigations {
+  height: 75%;
+  display: flex;
+  flex-direction: column;
+}
+.nav__button {
+  background-color: rgba(255, 255, 255, 0.08);
+  height: 10%;
+  display: flex;
+  align-items: center;
+  border: 1px solid black;
+  cursor: pointer;
+  padding-left: 10px;
+}
+.navigations .active {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+.nav__button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+.staff__details {
+  width: 79%;
+  overflow-y: scroll;
+  height: 100%;
+  position: relative;
+}
+.staff__details__header {
+  height: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.staff__details .main__content {
+  height: 100%;
+}
+.staff__details .profile__image {
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  margin-bottom: 15px;
+}
+.profile__image .image__background img,
+.skeleton__image {
+  height: 100%;
+  width: 100%;
+  border-radius: 50%;
+}
+.skeleton__image {
+  height: 100% !important;
+  width: 100% !important;
+}
+.profile__image .image__background {
+  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+  position: relative;
+}
+.profile__image .upload__icon {
+  position: absolute;
+  bottom: 0;
+  right: 8%;
+  cursor: pointer;
+}
+.staff__details .group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  height: 38%;
+}
+.staff__details .staff__data {
+  height: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.home__sidebar .staff__data {
+  padding-left: 10px;
+  height: 70%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+.home__sidebar .staff__data .row {
+  height: 15%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.staff__details .staff__data .detail__group {
+  display: flex;
+  height: 20%;
+  justify-content: space-between;
+  /* gap: 10px; */
+}
+.staff__details .staff__data .uncompleted {
+  display: block;
+  display: flex;
+  gap: 14px;
+  justify-content: flex-start;
+}
+.staff__details .staff__data .row {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  width: 19%;
+}
+.group .input__field {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30%;
+  margin-top: 10px;
+}
+.group .input__field input {
+  height: 50%;
+  border: none;
+  outline: none;
+  border-radius: 8px;
+}
+.action__buttons {
+  display: flex;
+  gap: 10px;
+  width: 95%;
+  height: 30%;
+  justify-content: flex-end;
+}
+.action__buttons .button {
+  width: 9%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.action__buttons .button:hover {
+  background-color: #fff;
+  color: black;
+}
+.form__background {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.form {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+}
+.register__form {
+  height: 90%;
+  width: 35%;
+  justify-content: space-between;
+}
+.login__form {
+  height: 48%;
+  width: 30%;
+  justify-content: space-between;
+}
+.info__text {
+  font-size: 0.8rem;
+}
+.form .form__header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 12%;
+  font-size: 1.5rem;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.register__form .form__header {
+  height: 5%;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.register__form .row {
+  display: flex;
+  justify-content: space-between;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.register__form .two__field {
+  display: flex;
+  gap: 15px;
+}
+.homepage {
+  height: 100%;
+  width: 100%;
+}
+.homepage__contents {
+  height: 92%;
+}
+.homepage .content {
+  height: 92%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.homepage__contents .content__header {
+  height: 10%;
+  display: flex;
+  align-items: center;
+  padding-left: 15px;
+  font-size: 1.2rem;
+}
+.homepage .sidebar {
+  height: 100%;
+}
+.homepage .welcome__page__header {
+  height: 10%;
+  display: flex;
+  align-items: center;
+}
+.homepage .welcome__page {
+  width: 78%;
+  display: flex;
+  height: 100%;
+}
+.homepage .welcome__page .left__content {
+  width: 70%;
+  height: 100%;
+}
+.homepage .welcome__page .home__sidebar {
+  height: 100%;
+  width: 30%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 10px;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+}
+.homepage .welcome__page .home__sidebar .image__background {
+  height: 80%;
+  width: 95%;
+}
+.homepage .nav__button {
+  text-decoration: none;
+  color: #fff;
+}
+.homepage__contents .actions {
+  height: 90%;
+  width: 98%;
+  margin: 0 auto;
+  display: flex;
+}
+.action__card {
+  height: 42%;
+  width: 28%;
+  text-decoration: none;
+}
+.update__education,
+.update__experience,
+.update__supervision,
+.update__publication,
+.update__research__papers,
+.update__computer__literacy,
+.update__community__service,
+.update__conferences__attended {
+  width: 79%;
+}
+
+.update__education__header,
+.update__experience__header,
+.update__supervision__header,
+.update__publication__header,
+.update__research__papers__header,
+.update__computer__literacy__header,
+.update__community__service__header,
+.update__conferences__attended__header {
+  height: 10%;
+  display: flex;
+  align-items: center;
+}
+.education__details,
+.supervision__details,
+.experience__details,
+.publication__details,
+.research__papers__details,
+.computer__literacy__details,
+.community__service__details,
+.conferences__attended__details {
+  height: 90%;
+}
+.update__supervision {
+  overflow-y: scroll;
+}
+.computer__literacy__details .uploaded__details {
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.update__computer__literacy .card {
+  height: 48%;
+  width: 28%;
+  cursor: pointer;
+}
+.update__supervision .sub__header {
+  height: 8%;
+  display: flex;
+  align-items: center;
+}
+
+.no__details {
+  height: 30%;
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+}
+.education__details .uploaded__details,
+.update__experience .uploaded__details,
+.update__supervision .uploaded__details,
+.update__publication .uploaded__details {
+  height: 100%;
+  position: relative;
+}
+.update__supervision .uploaded__details {
+  height: fit-content;
+}
+.details__table {
+  width: 95%;
+  margin: 0 auto;
+  position: relative;
+}
+.details__table .action__buttons {
+  display: flex;
+  align-items: center;
+  height: 40px;
+}
+.icon {
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+.delete__icon:hover {
+  color: red;
+}
+.edit__icon:hover {
+  color: blue;
+}
+.add__icon {
+  color: #fff;
+}
+.add__icon__background {
+  background-color: red;
+  position: absolute !important;
+  right: 0;
+  top: 90%;
+}
+.table__row .input {
+  width: 40%;
+}
+.error__popup {
+  position: absolute;
+  z-index: 999;
+  left: 40%;
+}
+.error__messages {
+  display: flex;
+  flex-direction: column;
+  width: 32%;
+  min-height: 16%;
+  height: fit-content;
+  top: 2%;
+  position: absolute;
+  gap: 5px;
+}
+.login__form .error__messages {
+  top: 15%;
+  width: 30%;
+  right: 35%;
+}
+.uploaded__details .total__points {
+  height: 10%;
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+}
+.update__computer__literacy .add__container {
+  height: 48%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.update__research__papers .total__points,
+.update__community__service .total__points,
+.update__conferences__attended .total__points {
+  height: 60px;
+}
+.hide {
+  display: none;
+}
+.staff__details .error__popup {
+  margin-top: 20px;
+}
+.computer__literacy__details .card__content {
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
+}
+.staff__details .popup {
+  width: 50%;
+  position: absolute;
+  top: 40%;
+  z-index: 999;
+  left: 23%;
+}
+.promotional__applications {
+  width: 79%;
+}
+.promotional__applications .sub__header {
+  height: 10%;
+  display: flex;
+  align-items: center;
+}
+.promotional__applications .applications,
+.promotional__applications .applications__table {
+  height: fit-content;
+  width: 98%;
+  margin: 0 auto;
+  margin-top: 10px;
+}
+.action__buttons .icon {
+  cursor: pointer !important;
+}
+.not__allowed {
+  cursor: not-allowed !important;
+}
+.not__allowed:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+.contents .error__popup {
+  margin-top: 20px;
+}
+.applications {
+  position: relative;
 }
 
-.App-link {
-  color: #61dafb;
+.application {
+  height: fit-content;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.application .contents {
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.application .sub__header {
+  height: 8vh;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+}
+.application__data__contents {
+  width: 95%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.application .action__header {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 10px;
+  height: 10vh;
+}
+.application__actions {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+}
+.application__actions .icon {
+  cursor: pointer;
+}
+.application .grand__total {
+  height: 10vh;
+  position: relative;
+}
+.grand__total h3 {
+  position: absolute;
+  right: 0;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20%;
+}
+.assessment__details {
+  width: 40vw;
+  height: fit-content;
+}
+.assessment__modal {
+  overflow-y: scroll !important;
+}
+.loading__background {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.not__allowed {
+  opacity: 0.3;
+}
+.fade__icon {
+  opacity: 0.3;
+  cursor: not-allowed !important;
+  font-size: 1.3rem;
+}
+.fade__icon:hover {
+  color: #fff;
 }
