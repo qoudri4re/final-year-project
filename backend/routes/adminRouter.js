@@ -47,7 +47,7 @@ router.post("/fad/login", async (req, res) => {
     });
   }
 });
-router.post("overall-admin", async (req, res) => {
+router.post("/overall-admin/login", async (req, res) => {
   const { email, password } = req.body;
 
   let adminDetails = await query(
@@ -145,12 +145,13 @@ router.get("fad/promotional-applications", verifyToken, async (req, res) => {
 });
 
 router.get(
-  "super-admin/promotional-applications",
+  "/super-admin/promotional-applications",
   verifyToken,
   async (req, res) => {
     const promotionalApplications = await query(
       "SELECT * FROM staff_rank INNER JOIN promotion ON staff_rank.rank_id = promotion.rank_id " +
-        "INNER JOIN staff_details ON staff_rank.staff_id = staff_details.sp_number WHERE promotion.status='faculty approved'"
+        "INNER JOIN staff_details ON staff_rank.staff_id = staff_details.sp_number WHERE promotion.status='faculty approved' " +
+        "or promotion.status='approved' or promotion.status='rejected'"
     );
 
     res.send({
@@ -188,9 +189,13 @@ router.get("/all-promotional-applications", verifyToken, async (req, res) => {
       "INNER JOIN staff_details ON staff_rank.staff_id = staff_details.sp_number WHERE promotion.status <> 'unsubmitted'"
   );
 
+  const remarks = await query("SELECT * from remarks where reciever=?", [
+    "hod",
+  ]);
   res.send({
     error: false,
     promotionalApplications,
+    remarks,
   });
 });
 
@@ -433,128 +438,11 @@ router.post("/fad/approve-application", verifyToken, async (req, res) => {
   }
 });
 
-router.post("/hod/approve-application", verifyToken, async (req, res) => {
-  const { promotionId } = req.body;
-
-  let updateOperation = await query(
-    "UPDATE promotion SET status=? WHERE id=?",
-    ["department approved", promotionId]
-  );
-  if (updateOperation.affectedRows === 1) {
-    let promotionData = await query(
-      "SELECT rank_id FROM promotion WHERE id=?",
-      [promotionId]
-    );
-
-    let updateStaffRank = await query(
-      "UPDATE staff_rank SET rank_application_status=? WHERE rank_id=?",
-      ["department approved", promotionData[0].rank_id]
-    );
-
-    if (updateStaffRank.affectedRows === 1) {
-      res.send({
-        error: false,
-        promotionData: promotionData[0],
-      });
-    } else {
-      res.send({
-        error: true,
-        errorMessage: "Server Error",
-      });
-    }
-  } else {
-    res.send({
-      error: true,
-      errorMessage: "Server Error",
-    });
+router.post(
+  "/super-admin/approve-application",
+  verifyToken,
+  async (req, res) => {
+    const { promotionId, spNumber } = req.body;
   }
-});
-
-router.post("/fad/reject-promotion", verifyToken, async (req, res) => {
-  const { promotionId, rejectionMessage } = req.body;
-
-  let updateOperation = await query(
-    "UPDATE promotion SET status=?, rejection_message=? WHERE id=?",
-    ["faculty rejected", rejectionMessage, promotionId]
-  );
-
-  await query(
-    "insert into remarks(remark, reciever, opened, created_by, promotion_id) " +
-      "values(?,?,?,?,?)",
-    [rejectionMessage, "staff", false, "hod", promotionId]
-  );
-
-  if (updateOperation.affectedRows === 1) {
-    let promotionData = await query(
-      "SELECT rank_id FROM promotion WHERE id=?",
-      [promotionId]
-    );
-
-    let updateStaffRank = await query(
-      "UPDATE staff_rank SET rank_application_status=? WHERE rank_id=?",
-      ["faculty rejected", promotionData[0].rank_id]
-    );
-
-    if (updateStaffRank.affectedRows === 1) {
-      res.send({
-        error: false,
-        promotionData: promotionData[0],
-      });
-    } else {
-      res.send({
-        error: true,
-        errorMessage: "Server Error",
-      });
-    }
-  } else {
-    res.send({
-      error: true,
-      errorMessage: "Server Error",
-    });
-  }
-});
-router.post("/hod/reject-promotion", verifyToken, async (req, res) => {
-  const { promotionId, rejectionMessage } = req.body;
-
-  let updateOperation = await query(
-    "UPDATE promotion SET status=?, rejection_message=? WHERE id=?",
-    ["department rejected", rejectionMessage, promotionId]
-  );
-
-  await query(
-    "insert into remarks(remark, reciever, opened, created_by, promotion_id) " +
-      "values(?,?,?,?,?)",
-    [rejectionMessage, "staff", false, "hod", promotionId]
-  );
-
-  if (updateOperation.affectedRows === 1) {
-    let promotionData = await query(
-      "SELECT rank_id FROM promotion WHERE id=?",
-      [promotionId]
-    );
-
-    let updateStaffRank = await query(
-      "UPDATE staff_rank SET rank_application_status=? WHERE rank_id=?",
-      ["department rejected", promotionData[0].rank_id]
-    );
-
-    if (updateStaffRank.affectedRows === 1) {
-      res.send({
-        error: false,
-        promotionData: promotionData[0],
-      });
-    } else {
-      res.send({
-        error: true,
-        errorMessage: "Server Error",
-      });
-    }
-  } else {
-    res.send({
-      error: true,
-      errorMessage: "Server Error",
-    });
-  }
-});
-
+);
 module.exports = router;

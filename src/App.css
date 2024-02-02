@@ -561,3 +561,10 @@
 .fade__icon:hover {
   color: #fff;
 }
+.message {
+  cursor: pointer;
+}
+.mail-icon {
+  height: 25px;
+  width: 25px;
+}

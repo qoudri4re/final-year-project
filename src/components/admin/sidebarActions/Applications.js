@@ -8,10 +8,17 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import {
+  Badge,
+  Button,
   // Alert,
   // Avatar,
   // Button,
   Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   // Dialog,
   // DialogActions,
   // DialogContent,
@@ -22,6 +29,7 @@ import {
 } from "@mui/material";
 import { IoMdEye } from "react-icons/io";
 import { FcApproval } from "react-icons/fc";
+import { CiMail } from "react-icons/ci";
 import { ImCancelCircle } from "react-icons/im";
 import { client } from "../../../config/axios-request";
 import { useNavigate } from "react-router-dom";
@@ -59,6 +67,52 @@ function Applications() {
   let navigate = useNavigate();
   const [errors, setErrors] = useState([]);
   const [promotionalApplications, setPromotionalApplications] = useState([]);
+  const [remarks, setRemarks] = useState([]);
+  const [displayMessage, setDisplayMessage] = useState({
+    display: false,
+    remarkId: null,
+  });
+
+  function toogleDisplayMessage(remarkId) {
+    setDisplayMessage({
+      display: !displayMessage.display,
+      remarkId,
+    });
+
+    remarks.map((remark) => {
+      if (remark.id === remarkId && remark.opened === 0) {
+        markMessageAsread(remarkId);
+      }
+      return "";
+    });
+  }
+
+  function markMessageAsread(remarkId) {
+    client
+      .post("/admin/read-message", { remarkId })
+      .then((res) => {
+        if (res.data.error) {
+          if ("tokenError" in res.data) {
+            navigate("/admin/login");
+          } else {
+            setErrors([res.data.errorMessage]);
+          }
+        } else {
+          setRemarks(
+            remarks.map((item) => {
+              if (item.id === remarkId) {
+                return {
+                  ...item,
+                  opened: 1,
+                };
+              }
+              return item;
+            })
+          );
+        }
+      })
+      .catch((error) => console.log(error));
+  }
 
   useEffect(() => {
     client
@@ -71,6 +125,8 @@ function Applications() {
             setErrors([res.data.errorMessage]);
           }
         } else {
+          console.log(res.data);
+          setRemarks(res.data.remarks);
           setPromotionalApplications(
             res.data.promotionalApplications.map((item, index) => {
               return {
@@ -174,6 +230,33 @@ function Applications() {
                               />
                             </React.Fragment>
                           )}
+                          {remarks.map((remark) => {
+                            if (remark.promotion_id === item.id) {
+                              return remark.opened === 1 ? (
+                                <Badge
+                                  color="primary"
+                                  className="message"
+                                  onClick={() =>
+                                    toogleDisplayMessage(remark.id)
+                                  }
+                                >
+                                  <CiMail className="mail-icon" />
+                                </Badge>
+                              ) : (
+                                <Badge
+                                  badgeContent={remark.opened === 1 ? "" : 1}
+                                  color="primary"
+                                  className="message"
+                                  onClick={() =>
+                                    toogleDisplayMessage(remark.id)
+                                  }
+                                >
+                                  <CiMail className="mail-icon" />
+                                </Badge>
+                              );
+                            }
+                            return "";
+                          })}
                         </div>
                       </StyledTableCell>
                     </StyledTableRow>
@@ -182,6 +265,25 @@ function Applications() {
               })}
             </Table>
           </TableContainer>
+
+          <Dialog open={displayMessage.display}>
+            <DialogTitle id="alert-dialog-title">
+              Message From Head of Department.
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                {remarks.map((item) => {
+                  if (item.id === displayMessage.remarkId) {
+                    return item.remark;
+                  }
+                  return "";
+                })}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={toogleDisplayMessage}>Close</Button>
+            </DialogActions>
+          </Dialog>
         </div>
       ) : (
         <div className="no__details">

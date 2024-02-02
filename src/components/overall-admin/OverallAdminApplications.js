@@ -45,24 +45,22 @@ let applicationStatusLableColor = {
   "faculty rejected": "error",
 };
 
-function ApplicationsFad() {
+function OverallAdminApplications() {
   let navigate = useNavigate();
   const [errors, setErrors] = useState([]);
   const [promotionalApplications, setPromotionalApplications] = useState([]);
-  const [remarks, setRemarks] = useState([]);
 
   useEffect(() => {
     client
-      .get("admin/fad/all-promotional-applications")
+      .get("/admin/super-admin/promotional-applications")
       .then((res) => {
         if (res.data.error) {
           if ("tokenError" in res.data) {
-            navigate("/fad/login");
+            navigate("/super-admin/login");
           } else {
             setErrors([res.data.errorMessage]);
           }
         } else {
-          setRemarks(res.data.remarks);
           setPromotionalApplications(
             res.data.promotionalApplications.map((item, index) => {
               return {
@@ -74,10 +72,10 @@ function ApplicationsFad() {
         }
       })
       .catch((error) => console.log(error));
-  }, []);
+  });
 
   function viewApplication(promotionId, sp_number) {
-    navigate(`/fad/view-application/${sp_number}/${promotionId}`);
+    navigate(`/super-admin/view-application/${sp_number}/${promotionId}`);
   }
 
   return (
@@ -138,9 +136,8 @@ function ApplicationsFad() {
                                 viewApplication(item.id, item.sp_number)
                               }
                             />
-                            {item.status.includes("faculty approved") ||
-                            item.status.includes("department approved") ||
-                            item.status.includes("faculty rejected") ? (
+                            {item.status.includes("final approval") ||
+                            item.status.includes("rejected") ? (
                               ""
                             ) : (
                               <React.Fragment>
@@ -160,12 +157,6 @@ function ApplicationsFad() {
                                 />
                               </React.Fragment>
                             )}
-                            {remarks.map((item) => {
-                              if (item.promotion_id === item.id) {
-                                return <p>add badge</p>;
-                              }
-                              return "";
-                            })}
                           </React.Fragment>
                         </div>
                       </StyledTableCell>
@@ -185,4 +176,4 @@ function ApplicationsFad() {
   );
 }
 
-export default ApplicationsFad;
+export default OverallAdminApplications;

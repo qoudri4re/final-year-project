@@ -12,6 +12,9 @@ import AdminViewApplication from "./components/admin/AdminViewApplication";
 import FacultyAdminLogin from "./components/faculty-admin/FacultyAdminLogin";
 import FacultyAdminHome from "./components/faculty-admin/FacultyAdminHome";
 import FadAdminViewApplication from "./components/faculty-admin/FadAdminViewApplication";
+import OverallAdminLogin from "./components/overall-admin/OverallAdminLogin";
+import OverallAdminHome from "./components/overall-admin/OverallAdminHome";
+import OverallAdminViewApplication from "./components/overall-admin/OverallAdminViewApplication";
 
 const darkTheme = createTheme({
   palette: {
@@ -39,6 +42,11 @@ function App() {
             <Route exact path="/fad/index" element={<FacultyAdminHome />} />
             <Route
               exact
+              path="/super-admin/index"
+              element={<OverallAdminHome />}
+            />
+            <Route
+              exact
               path="/admin/view-application/:spNumber/:promotionId"
               element={<AdminViewApplication />}
             />
@@ -47,7 +55,17 @@ function App() {
               path="/fad/view-application/:spNumber/:promotionId"
               element={<FadAdminViewApplication />}
             />
+            <Route
+              exact
+              path="/super-admin/view-application/:spNumber/:promotionId"
+              element={<OverallAdminViewApplication />}
+            />
             <Route exact path="/fad/login" element={<FacultyAdminLogin />} />
+            <Route
+              exact
+              path="/super-admin/login"
+              element={<OverallAdminLogin />}
+            />
           </Routes>
         </div>
       </BrowserRouter>
